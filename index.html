@@ -31,12 +31,13 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* This centers it on desktop */
+            justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            /* Added padding for mobile */
             padding: 0 20px;
-            box-sizing: border-box; 
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
         }
 
         /* Content Box */
@@ -45,12 +46,12 @@
             border-radius: 15px; 
             padding: 40px 60px;
             text-align: center;
-            width: 100%; 
-            max-width: 700px; 
+            width: 100%; /* Make it full-width on mobile */
+            max-width: 700px; /* But limit it on desktop */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 2; 
-            box-sizing: border-box; 
+            box-sizing: border-box; /* Ensures padding doesn't break layout */
         }
 
         /* Heading Style */
@@ -169,22 +170,12 @@
         }
 
         /* ========================================
-        MOBILE RESPONSIVE SECTION
+        NEW SECTION: RESPONSIVE MOBILE FIX
         ========================================
         This rule applies to all screens 768px wide or smaller (phones)
         */
         @media (max-width: 768px) {
             
-            /* ****************************************
-              *** THIS IS THE NEW FIX FOR THE BUG  ***
-              ****************************************
-              This moves the content box higher on the screen
-            */
-            #splash-screen {
-                justify-content: flex-start; /* Aligns box to the top */
-                padding-top: 20vh; /* Pushes it down 20% (not centered) */
-            }
-
             #content-box {
                 padding: 30px 20px; /* Less padding on sides */
             }
@@ -280,10 +271,10 @@
                 Typebot.initStandard({ typebot: "pongo-bot-fb51et7" });
                 `;
                 document.body.append(typebotInitScript);
-            }, 1000); // The 1-second delay also helps prevent this bug
+            }, 1000);
         }
 
-        function toggleJJungleSound() {
+        function toggleJungleSound() {
             const jungleSound = document.getElementById('jungle-sound');
             const soundIcon = document.getElementById('sound-icon');
 
