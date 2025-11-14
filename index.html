@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     
     <style>
-        /* Basic reset and full-page setup */
+        /* All your CSS is perfect and remains unchanged */
         body, html {
             margin: 0;
             padding: 0;
@@ -23,7 +23,6 @@
             background-size: cover;
         }
 
-        /* The Main Splash Screen */
         #splash-screen {
             height: 100vh;
             width: 100%;
@@ -37,7 +36,6 @@
             box-sizing: border-box; 
         }
 
-        /* Content Box */
         #content-box {
             background-color: rgba(0, 0, 0, 0.7); 
             border-radius: 15px; 
@@ -51,7 +49,6 @@
             box-sizing: border-box; 
         }
 
-        /* Heading Style */
         #content-box h1 {
             font-family: 'Luckiest Guy', cursive; 
             font-size: 5rem; 
@@ -62,7 +59,6 @@
             line-height: 1;
         }
 
-        /* Paragraph Style */
         #content-box p {
             font-size: 1.3rem;
             color: #E0E0E0;
@@ -70,7 +66,6 @@
             line-height: 1.5;
         }
 
-        /* The Animated Orangutan */
         #orangutan-mascot {
             position: absolute;
             bottom: -80px;      
@@ -82,7 +77,6 @@
             animation: orangutan-peek 8s ease-in-out infinite alternate;
         }
 
-        /* "Start Your Adventure" Button */
         .explore-button {
             font-family: 'Luckiest Guy', cursive; 
             font-size: 1.8rem;
@@ -108,7 +102,6 @@
             animation: none;
         }
 
-        /* SOUND TOGGLE BUTTON */
         .sound-toggle {
             position: absolute;
             bottom: 30px;
@@ -134,13 +127,12 @@
             border-color: #FFF; 
         }
 
-        /* --- RESTART BUTTON STYLE --- */
         #restart-button {
-            display: none; /* Hidden by default */
+            display: none; 
             position: absolute;
             top: 30px;
             right: 30px;
-            z-index: 1001; /* On top of sound button and chat */
+            z-index: 1001; 
             
             font-family: 'Luckiest Guy', cursive;
             font-size: 0.9rem;
@@ -157,12 +149,11 @@
             transform: scale(1.05);
         }
         
-        /* --- NEW: HOME BUTTON STYLE --- */
         #home-button {
-            display: none; /* Hidden by default */
+            display: none; 
             position: absolute;
             top: 30px;
-            left: 30px; /* Positioned top-left */
+            left: 30px; 
             z-index: 1001; 
             
             font-family: 'Luckiest Guy', cursive;
@@ -179,9 +170,7 @@
         #home-button:hover {
             transform: scale(1.05);
         }
-        /* ------------------------------- */
 
-        /* The Chatbot Container (Initially Hidden) */
         #chatbot-container {
             display: none;
             height: 100vh;
@@ -279,14 +268,12 @@
                 font-size: 0.8rem;
             }
 
-            /* --- NEW: HOME BUTTON (MOBILE) --- */
             #home-button {
                 top: 15px;
-                left: 15px; /* Positioned top-left */
+                left: 15px; 
                 padding: 8px 15px;
                 font-size: 0.8rem;
             }
-            /* --------------------------------- */
         }
 
     </style>
@@ -314,6 +301,7 @@
     <button id="home-button" onclick="goHome()">
         Home
     </button>
+    
     <button id="restart-button" onclick="restartChatbot()">
         Restart
     </button>
@@ -323,7 +311,7 @@
 
     <script>
         
-        // --- NEW: This function holds the chat-loading logic ---
+        // This function holds the chat-loading logic
         function loadFreshChat() {
             // 1. Find the container
             const container = document.getElementById('chatbot-container');
@@ -357,7 +345,7 @@
 
                 // Show the buttons
                 document.getElementById('restart-button').style.display = 'block';
-                document.getElementById('home-button').style.display = 'block'; // <-- ADDED
+                document.getElementById('home-button').style.display = 'block';
 
                 // Load the chat
                 loadFreshChat();
@@ -365,12 +353,32 @@
             }, 1000); 
         }
 
-        // This function just calls the chat-loading logic
+        // --- THIS IS THE NEW, STRONGER RESTART FUNCTION ---
         function restartChatbot() {
+            
+            // --- NEW FIX: This hunts down ALL Typebot storage ---
+            
+            // Loop through all keys in sessionStorage
+            Object.keys(sessionStorage).forEach(key => {
+                if (key.startsWith('typebot-')) {
+                    sessionStorage.removeItem(key);
+                }
+            });
+
+            // Loop through all keys in localStorage
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('typebot-')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            // ----------------------------------------------------
+
+            // Now, load a fresh chat
             loadFreshChat();
         }
+        // ------------------------------------------------------------------
 
-        // --- NEW: This function goes back to the splash screen ---
+        // This function goes back to the splash screen
         function goHome() {
             // Hide chat and buttons
             document.getElementById('chatbot-container').style.display = 'none';
@@ -379,14 +387,12 @@
 
             // Show splash screen
             const splashScreen = document.getElementById('splash-screen');
-            splashScreen.style.display = 'flex'; // Use 'flex' as it's a flex container
+            splashScreen.style.display = 'flex'; 
             
-            // Use a tiny delay to allow the display to change before fading in
             setTimeout(() => {
                 splashScreen.style.opacity = '1';
             }, 10); 
         }
-        // ---------------------------------------------------------
 
         function toggleJungleSound() {
             const jungleSound = document.getElementById('jungle-sound');
