@@ -171,6 +171,20 @@
             transform: scale(1.05);
         }
 
+        /* --- NEW: Google Translate Widget Styling --- */
+        #google_translate_element {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: 120px; /* Positioned next to the Home button */
+            z-index: 1001;
+        }
+        /* Make sure the dropdown is visible */
+        .goog-te-menu-frame {
+            z-index: 1002 !important; 
+        }
+        /* ------------------------------------------ */
+
         #chatbot-container {
             display: none;
             height: 100vh;
@@ -274,6 +288,15 @@
                 padding: 8px 15px;
                 font-size: 0.8rem;
             }
+
+            /* --- NEW: Google Translate Responsive --- */
+            #google_translate_element {
+                top: 15px;
+                left: 100px; /* Position next to mobile Home button */
+                transform: scale(0.8); /* Make it a bit smaller */
+                transform-origin: left top;
+            }
+            /* -------------------------------------- */
         }
 
     </style>
@@ -301,6 +324,8 @@
     <button id="home-button" onclick="goHome()">
         Home
     </button>
+    
+    <div id="google_translate_element"></div>
     
     <button id="restart-button" onclick="restartChatbot()">
         Restart
@@ -346,6 +371,8 @@
                 // Show the buttons
                 document.getElementById('restart-button').style.display = 'block';
                 document.getElementById('home-button').style.display = 'block';
+                // NEW: Show the translate widget
+                document.getElementById('google_translate_element').style.display = 'block';
 
                 // Load the chat
                 loadFreshChat();
@@ -384,6 +411,8 @@
             document.getElementById('chatbot-container').style.display = 'none';
             document.getElementById('restart-button').style.display = 'none';
             document.getElementById('home-button').style.display = 'none';
+            // NEW: Hide the translate widget
+            document.getElementById('google_translate_element').style.display = 'none';
 
             // Show splash screen
             const splashScreen = document.getElementById('splash-screen');
@@ -407,5 +436,13 @@
             }
         }
     </script>
+    
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
