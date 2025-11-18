@@ -10,14 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     
     <style>
-        /* All your CSS is perfect and remains unchanged */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             font-family: Arial, sans-serif;
-            overflow: hidden; 
+            overflow: hidden;
             
             background: url('images/jungle-scene.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -171,43 +170,16 @@
             transform: scale(1.05);
         }
 
-        /* --- NEW: Google Translate Widget Styling --- */
-        #google_translate_element {
-            display: none;
-            position: absolute;
-            top: 30px;
-            left: 120px; /* Positioned next to the Home button */
-            z-index: 1001;
-        }
-        /* Make sure the dropdown is visible */
-        .goog-te-menu-frame {
-            z-index: 1002 !important; 
-        }
-        /* ------------------------------------------ */
-
         #chatbot-container {
             display: none;
             height: 100vh;
             width: 100%;
         }
 
-        /* --- Keyframe Animations --- */
         @keyframes orangutan-peek {
-            0% { 
-                bottom: -80px; 
-                right: 50px; 
-                transform: rotate(5deg); 
-            }
-            50% { 
-                bottom: -40px; 
-                right: 30px; 
-                transform: rotate(0deg); 
-            }
-            100% { 
-                bottom: -80px; 
-                right: 50px; 
-                transform: rotate(5deg); 
-            }
+            0% { bottom: -80px; right: 50px; transform: rotate(5deg); }
+            50% { bottom: -40px; right: 30px; transform: rotate(0deg); }
+            100% { bottom: -80px; right: 50px; transform: rotate(5deg); }
         }
         
         @keyframes buttonPulse {
@@ -216,9 +188,7 @@
             100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.5); }
         }
 
-        /* MOBILE RESPONSIVE SECTION */
         @media (max-width: 768px) {
-            
             #splash-screen {
                 justify-content: flex-start; 
                 padding-top: 20vh; 
@@ -250,21 +220,9 @@
             }
 
             @keyframes orangutan-peek {
-                0% { 
-                    bottom: -60px; 
-                    right: -40px; 
-                    transform: rotate(5deg); 
-                }
-                50% { 
-                    bottom: -20px; 
-                    right: -20px; 
-                    transform: rotate(0deg); 
-                }
-                100% { 
-                    bottom: -60px; 
-                    right: -40px; 
-                    transform: rotate(5deg); 
-                }
+                0% { bottom: -60px; right: -40px; transform: rotate(5deg); }
+                50% { bottom: -20px; right: -20px; transform: rotate(0deg); }
+                100% { bottom: -60px; right: -40px; transform: rotate(5deg); }
             }
 
             .sound-toggle {
@@ -288,17 +246,7 @@
                 padding: 8px 15px;
                 font-size: 0.8rem;
             }
-
-            /* --- NEW: Google Translate Responsive --- */
-            #google_translate_element {
-                top: 15px;
-                left: 100px; /* Position next to mobile Home button */
-                transform: scale(0.8); /* Make it a bit smaller */
-                transform-origin: left top;
-            }
-            /* -------------------------------------- */
         }
-
     </style>
 </head>
 <body>
@@ -325,40 +273,28 @@
         Home
     </button>
     
-    <div id="google_translate_element"></div>
-    
     <button id="restart-button" onclick="restartChatbot()">
         Restart
     </button>
 
-    <div id="chatbot-container">
-        </div>
+    <div id="chatbot-container"></div>
 
     <script>
-        
-        // This function holds the chat-loading logic
         function loadFreshChat() {
-            // 1. Find the container
             const container = document.getElementById('chatbot-container');
-            
-            // 2. Clear all the old chat HTML from it
             container.innerHTML = '';
 
-            // 3. Re-create the <typebot-standard> element
             const typebotElement = document.createElement('typebot-standard');
             typebotElement.style.height = '100vh';
             container.appendChild(typebotElement);
 
-            // 4. Re-run the initialization script
             const typebotInitScript = document.createElement("script");
             typebotInitScript.type = "module";
             typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js/dist/web.js';
-            Typebot.initStandard({ typebot: "pongo-bot-fb51et7" });
-            `;
+            Typebot.initStandard({ typebot: "pongo-bot-fb51et7" });`;
             document.body.append(typebotInitScript);
         }
 
-        // This function handles the splash screen fade
         function showChatbot() {
             const splashScreen = document.getElementById('splash-screen');
             splashScreen.style.opacity = '0';
@@ -367,60 +303,30 @@
             setTimeout(() => {
                 splashScreen.style.display = 'none';
                 document.getElementById('chatbot-container').style.display = 'block';
-
-                // Show the buttons
                 document.getElementById('restart-button').style.display = 'block';
                 document.getElementById('home-button').style.display = 'block';
-                // NEW: Show the translate widget
-                document.getElementById('google_translate_element').style.display = 'block';
-
-                // Load the chat
                 loadFreshChat();
-
-            }, 1000); 
+            }, 1000);
         }
 
-        // --- THIS IS THE NEW, STRONGER RESTART FUNCTION ---
         function restartChatbot() {
-            
-            // --- NEW FIX: This hunts down ALL Typebot storage ---
-            
-            // Loop through all keys in sessionStorage
             Object.keys(sessionStorage).forEach(key => {
-                if (key.startsWith('typebot-')) {
-                    sessionStorage.removeItem(key);
-                }
+                if (key.startsWith('typebot-')) sessionStorage.removeItem(key);
             });
-
-            // Loop through all keys in localStorage
             Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('typebot-')) {
-                    localStorage.removeItem(key);
-                }
+                if (key.startsWith('typebot-')) localStorage.removeItem(key);
             });
-            // ----------------------------------------------------
-
-            // Now, load a fresh chat
             loadFreshChat();
         }
-        // ------------------------------------------------------------------
 
-        // This function goes back to the splash screen
         function goHome() {
-            // Hide chat and buttons
             document.getElementById('chatbot-container').style.display = 'none';
             document.getElementById('restart-button').style.display = 'none';
             document.getElementById('home-button').style.display = 'none';
-            // NEW: Hide the translate widget
-            document.getElementById('google_translate_element').style.display = 'none';
 
-            // Show splash screen
             const splashScreen = document.getElementById('splash-screen');
             splashScreen.style.display = 'flex'; 
-            
-            setTimeout(() => {
-                splashScreen.style.opacity = '1';
-            }, 10); 
+            setTimeout(() => { splashScreen.style.opacity = '1'; }, 10); 
         }
 
         function toggleJungleSound() {
@@ -429,20 +335,13 @@
 
             if (jungleSound.paused) {
                 jungleSound.play();
-                soundIcon.textContent = '🔇';
+                soundIcon.textContent = '🔊';
             } else {
                 jungleSound.pause();
-                soundIcon.textContent = '🔊';
+                soundIcon.textContent = '🔇';
             }
         }
     </script>
-    
-    <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-    }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
