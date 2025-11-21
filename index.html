@@ -3,343 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jungle Chat - Welcome!</title>
+    <title>Jungle Chat - PongoBot</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     
     <style>
+        /* --- CORE STYLES --- */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
             font-family: Arial, sans-serif;
-            overflow: hidden;
-            
+            overflow-x: hidden; 
+            scroll-behavior: smooth;
             background: url('images/jungle-scene.jpg') no-repeat center center fixed;
             background-size: cover;
         }
 
-        #splash-screen {
-            height: 100vh;
+        /* --- DAY & NIGHT CYCLE OVERLAY (Updated) --- */
+        #day-night-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            z-index: 5000; /* Sits above main content but BELOW chat container */
+            pointer-events: none; 
+            animation: dayNightCycle 60s infinite linear;
+            mix-blend-mode: multiply; 
+        }
+
+        /* UPDATED CYCLE: Starts Bright, Less Dark at Night */
+        @keyframes dayNightCycle {
+            0% { background-color: rgba(255, 255, 255, 0); }     /* Noon: Brightest (Start) */
+            25% { background-color: rgba(255, 140, 0, 0.3); }    /* Sunset: Orange */
+            50% { background-color: rgba(0, 0, 30, 0.6); }       /* Night: Dark Blue (Less Dark: 0.6) */
+            75% { background-color: rgba(147, 112, 219, 0.3); }  /* Sunrise: Purple */
+            100% { background-color: rgba(255, 255, 255, 0); }   /* Back to Noon */
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes swing {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(5deg); }
+            40% { transform: rotate(-5deg); }
+            60% { transform: rotate(3deg); }
+            80% { transform: rotate(-3deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .feature-card:hover { animation: swing 1s ease-in-out; background: rgba(255, 255, 255, 0.2); }
+        .nav-cta:hover, .explore-button:hover, .chat-nav-btn:hover { animation: swing 0.5s ease-in-out; }
+
+        /* --- VINES --- */
+        .vine-decoration { position: fixed; top: -10px; z-index: 100; pointer-events: none; animation: gentleSway 3s ease-in-out infinite alternate; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); }
+        .vine-left { left: 20px; transform-origin: top left; }
+        .vine-right { right: 20px; transform: scaleX(-1); transform-origin: top right; }
+        @keyframes gentleSway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+
+        /* --- NAVIGATION BAR (Re-structured for Centering) --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            padding: 0 40px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Keeps Logo Left, Button Right */
             align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding: 0 20px;
-            box-sizing: border-box; 
+            background: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(8px);
+            z-index: 7000; 
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            transition: top 0.5s ease;
         }
 
-        #content-box {
-            background-color: rgba(0, 0, 0, 0.7); 
-            border-radius: 15px; 
-            padding: 40px 60px;
-            text-align: center;
-            width: 100%; 
-            max-width: 700px; 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 2; 
-            box-sizing: border-box; 
-        }
-
-        #content-box h1 {
-            font-family: 'Luckiest Guy', cursive; 
-            font-size: 5rem; 
-            color: #FFD700; 
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7); 
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            line-height: 1;
-        }
-
-        #content-box p {
-            font-size: 1.3rem;
-            color: #E0E0E0;
-            margin-bottom: 40px;
-            line-height: 1.5;
-        }
-
-        #orangutan-mascot {
-            position: absolute;
-            bottom: -80px;      
-            right: 50px;
-            width: 450px;       
-            height: auto;
-            z-index: 3;         
-            transform: rotate(5deg);
-            animation: orangutan-peek 8s ease-in-out infinite alternate;
-        }
-
-        .explore-button {
-            font-family: 'Luckiest Guy', cursive; 
-            font-size: 1.8rem;
-            font-weight: bold;
-            padding: 18px 45px;
-            border: none;
-            border-radius: 50px; 
-            background: linear-gradient(145deg, #FFDD00, #FFBB00); 
-            color: #554000; 
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 
-                        inset 0 2px 5px rgba(255, 255, 255, 0.5); 
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5); 
-            animation: buttonPulse 2s infinite ease-in-out;
-        }
-
-        .explore-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 
-                        inset 0 2px 5px rgba(255, 255, 255, 0.7);
-            background: linear-gradient(145deg, #FFBB00, #FFDD00); 
-            animation: none;
-        }
-
-        .sound-toggle {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: 2px solid #FFD700;
-            border-radius: 50%;
-            width: 60px; 
-            height: 60px; 
+        .nav-brand {
             display: flex;
-            justify-content: center;
             align-items: center;
-            cursor: pointer;
-            font-size: 1.8rem; 
-            transition: background 0.3s, transform 0.3s, border-color 0.3s;
-            z-index: 1000; 
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-        .sound-toggle:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: scale(1.1);
-            border-color: #FFF; 
-        }
-
-        #restart-button {
-            display: none; 
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            z-index: 1001; 
-            
+            gap: 10px;
             font-family: 'Luckiest Guy', cursive;
-            font-size: 0.9rem;
-            background: #f0f0f0;
-            color: #333;
-            border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
+            font-size: 1.5rem;
+            color: #FFD700;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
+            z-index: 2; /* Ensure it stays clickable */
         }
-        #restart-button:hover {
-            transform: scale(1.05);
+        .nav-brand:hover { animation: shake 0.5s; }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } 100% { transform: rotate(0deg); } }
+        .nav-brand img { height: 40px; width: auto; }
+
+        /* CENTERED LINKS CONTAINER */
+        .nav-links {
+            position: absolute; /* Absolute positioning to center perfectly */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
         }
+
+        .nav-links li { position: relative; }
+
+        .nav-links li a {
+            text-decoration: none; color: #ffffff; font-size: 1rem; font-weight: 500; transition: color 0.3s;
+            display: block; padding: 10px 0; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-links li a:hover { color: #FFD700; text-shadow: 0 0 10px #FFD700; }
+        .arrow { font-size: 0.7rem; margin-left: 5px; color: #FFD700; }
+
+        /* Dropdown */
+        .dropdown-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95); list-style: none; padding: 10px 0; border-radius: 8px;
+            min-width: 200px; border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); z-index: 8000;
+        }
+        .nav-links li:hover .dropdown-menu { display: block; animation: fadeInUp 0.3s ease; }
+        .dropdown-menu li a { padding: 12px 20px; text-align: center; white-space: nowrap; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+        /* --- BUTTONS --- */
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 2;
+        }
+
+        /* Main CTA */
+        .nav-cta {
+            padding: 10px 25px;
+            background: linear-gradient(145deg, #FF9900, #FF6600);
+            border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;
+            font-size: 1rem; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .nav-cta:hover { transform: scale(1.05); background: linear-gradient(145deg, #FFAA00, #FF7700); }
+
+        /* Chat Controls (Home/Restart) */
+        .chat-nav-btn {
+            padding: 8px 20px;
+            background: linear-gradient(145deg, #FFDD00, #FFBB00);
+            border: none; border-radius: 8px; color: #554000; font-weight: bold; cursor: pointer;
+            font-size: 0.9rem; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: 'Luckiest Guy', cursive;
+        }
+        .chat-nav-btn:hover { transform: scale(1.05); background: linear-gradient(145deg, #FFBB00, #FFDD00); box-shadow: 0 0 15px #FFD700; }
+
+        /* --- SECTIONS --- */
+        #main-website-content { position: relative; width: 100%; z-index: 2; }
+        section { padding: 80px 20px; width: 100%; box-sizing: border-box; position: relative; }
+        .section-title { font-family: 'Luckiest Guy', cursive; font-size: 4rem; color: #FFD700; text-align: center; margin-bottom: 60px; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
         
-        #home-button {
-            display: none; 
-            position: absolute;
-            top: 30px;
-            left: 30px; 
-            z-index: 1001; 
-            
-            font-family: 'Luckiest Guy', cursive;
-            font-size: 0.9rem;
-            background: #f0f0f0;
-            color: #333;
-            border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
+        #hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; }
+        #content-box { background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); border-radius: 20px; padding: 50px 40px; text-align: center; width: 100%; max-width: 850px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255, 255, 255, 0.1); position: relative; z-index: 20; margin-top: 60px; }
+        #content-box h1 { font-family: 'Luckiest Guy', cursive; font-size: 3.5rem; color: #FFD700; text-shadow: 3px 3px 0px #000; margin-bottom: 20px; line-height: 1.2; min-height: 4.2rem; }
+        #hero-title { display: inline; }
+        .cursor { display: inline-block; width: 10px; height: 0.8em; background-color: #FFD700; animation: blink 1s infinite; margin-left: 5px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        #content-box p { font-size: 1.4rem; color: #E0E0E0; margin-bottom: 40px; line-height: 1.6; }
+        
+        #orangutan-mascot { position: absolute; bottom: -80px; right: 20px; width: 450px; height: auto; z-index: 25; transform: rotate(5deg); animation: orangutan-peek 8s ease-in-out infinite alternate; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+        
+        .explore-button { font-family: 'Luckiest Guy', cursive; font-size: 1.8rem; font-weight: bold; padding: 18px 50px; border: none; border-radius: 50px; background: linear-gradient(145deg, #FFDD00, #FFBB00); color: #554000; cursor: pointer; transition: all 0.3s ease-in-out; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); position: relative; z-index: 30; }
+        
+        #features { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1100px; margin: 0 auto; }
+        .feature-card { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); padding: 40px 30px; border-radius: 20px; text-align: center; color: white; transition: transform 0.3s, background 0.3s; transform-origin: top center; }
+        .feature-icon { font-size: 4rem; margin-bottom: 20px; display: block; text-shadow: 0 5px 10px rgba(0,0,0,0.3); }
+        .feature-card h3 { font-family: 'Luckiest Guy', cursive; font-size: 1.8rem; color: #FFD700; margin-bottom: 15px; }
+        
+        #about { background: linear-gradient(to bottom, rgba(0,0,0,0.7), #000); color: white; text-align: center; padding-top: 100px; padding-bottom: 0; }
+        .about-container { display: flex; flex-direction: column; align-items: center; justify-content: center; max-width: 800px; margin: 0 auto; z-index: 2; position: relative; }
+        .about-text p { font-size: 1.5rem; color: #ccc; margin-bottom: 30px; line-height: 1.8; }
+        .peeking-pongo { width: 350px; max-width: 80%; height: auto; display: block; margin: 40px auto 0 auto; transition: transform 0.4s, filter 0.3s; cursor: pointer; position: relative; z-index: 5; }
+        .peeking-pongo:hover { transform: translateY(-50px) scale(1.1); filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6)); }
+
+        /* --- GLOBAL EFFECTS --- */
+        .leaf { 
+            position: fixed; top: -10%; z-index: 1; pointer-events: none; 
+            animation: leaf-fall linear forwards; 
+            opacity: 0.6; 
         }
-        #home-button:hover {
-            transform: scale(1.05);
+        @keyframes leaf-fall { 
+            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; } 
+            20% { opacity: 0.8; } 
+            100% { transform: translateY(110vh) rotate(360deg) translateX(50px); opacity: 0; } 
         }
 
+        .falling-banana { position: fixed; top: -50px; font-size: 3rem; z-index: 9999; pointer-events: none; animation: fall linear forwards; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
+        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(110vh) rotate(720deg); } }
+        
+        .firefly { position: fixed; width: 8px; height: 8px; background: #FFD700; border-radius: 50%; pointer-events: none; box-shadow: 0 0 15px #FFD700, 0 0 30px #FF6600; z-index: 9998; animation: fadeOut 1.5s linear forwards; }
+        @keyframes fadeOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(3); opacity: 0; top: -20px; } }
+        
+        .sound-toggle { position: fixed; bottom: 30px; right: 30px; background: rgba(0, 0, 0, 0.6); color: white; border: 2px solid #FFD700; border-radius: 50%; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.8rem; z-index: 5000; box-shadow: 0 0 20px rgba(255,215,0,0.2); }
+
+        /* --- CHATBOT CONTAINER --- */
         #chatbot-container {
-            display: none;
-            height: 100vh;
+            display: none; 
+            top: 80px; 
+            height: calc(100vh - 80px); 
             width: 100%;
+            background: #000; /* Solid black for readability */
+            position: fixed; left: 0; z-index: 6000; 
         }
+        .loader { border: 6px solid #333; border-top: 6px solid #FFD700; border-radius: 50%; width: 60px; height: 60px; animation: spin 0.8s linear infinite; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes orangutan-peek { 0% { bottom: -80px; right: 50px; transform: rotate(5deg); } 50% { bottom: -40px; right: 30px; transform: rotate(0deg); } 100% { bottom: -80px; right: 50px; transform: rotate(5deg); } }
 
-        @keyframes orangutan-peek {
-            0% { bottom: -80px; right: 50px; transform: rotate(5deg); }
-            50% { bottom: -40px; right: 30px; transform: rotate(0deg); }
-            100% { bottom: -80px; right: 50px; transform: rotate(5deg); }
-        }
-        
-        @keyframes buttonPulse {
-            0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.5); }
-            50% { box-shadow: 0 5px 25px rgba(255, 215, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.7); } 
-            100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.5); }
-        }
-
+        /* MOBILE */
         @media (max-width: 768px) {
-            #splash-screen {
-                justify-content: flex-start; 
-                padding-top: 20vh; 
-            }
-
-            #content-box {
-                padding: 30px 20px; 
-            }
-
-            #content-box h1 {
-                font-size: 2.8rem; 
-                letter-spacing: 1px;
-            }
-
-            #content-box p {
-                font-size: 1rem; 
-                margin-bottom: 30px;
-            }
-
-            .explore-button {
-                font-size: 1.3rem; 
-                padding: 15px 35px; 
-            }
-
-            #orangutan-mascot {
-                width: 250px; 
-                bottom: -40px; 
-                right: -30px;  
-            }
-
-            @keyframes orangutan-peek {
-                0% { bottom: -60px; right: -40px; transform: rotate(5deg); }
-                50% { bottom: -20px; right: -20px; transform: rotate(0deg); }
-                100% { bottom: -60px; right: -40px; transform: rotate(5deg); }
-            }
-
-            .sound-toggle {
-                width: 45px; 
-                height: 45px;
-                font-size: 1.3rem;
-                bottom: 15px;
-                right: 15px;
-            }
-
-            #restart-button {
-                top: 15px;
-                right: 15px;
-                padding: 8px 15px;
-                font-size: 0.8rem;
-            }
-
-            #home-button {
-                top: 15px;
-                left: 15px; 
-                padding: 8px 15px;
-                font-size: 0.8rem;
-            }
+            .nav-links { display: none; } 
+            .navbar { padding: 15px 20px; }
+            .nav-brand span { display: none; } 
+            #content-box { padding: 30px 20px; } #content-box h1 { font-size: 2.5rem; } .section-title { font-size: 2.5rem; }
+            #orangutan-mascot { width: 250px; bottom: -40px; right: -30px; } .peeking-pongo { width: 250px; }
+            @keyframes orangutan-peek { 0% { bottom: -60px; right: -40px; transform: rotate(5deg); } 50% { bottom: -20px; right: -20px; transform: rotate(0deg); } 100% { bottom: -60px; right: -40px; transform: rotate(5deg); } }
+            .vine-decoration { width: 100px; height: 200px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <img id="orangutan-mascot" src="images/orangutan-hat.png" alt="Playful Orangutan">
-        <div id="content-box">
-            <h1>Your Jungle Adventure Awaits!</h1>
-            <p>PongoBot, your orangutan companion, is ready to guide you.<br>Click below to start your journey!</p>
-            <button class="explore-button" onclick="showChatbot()">Chat with PongoBot!</button>
+    <!-- DAY NIGHT OVERLAY -->
+    <div id="day-night-overlay"></div>
+
+    <!-- SVG VINE DECORATIONS -->
+    <svg class="vine-decoration vine-left" width="200" height="400" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,0 Q50,100 20,200 T50,400" stroke="#2e8b57" stroke-width="5" fill="none"/>
+        <circle cx="20" cy="50" r="5" fill="#228b22"/> <circle cx="40" cy="150" r="5" fill="#228b22"/>
+        <path d="M20,50 Q30,40 40,50 Q30,60 20,50" fill="#228b22"/> <path d="M40,150 Q50,140 60,150 Q50,160 40,150" fill="#228b22"/>
+    </svg>
+    <svg class="vine-decoration vine-right" width="200" height="400" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,0 Q50,100 20,200 T50,400" stroke="#2e8b57" stroke-width="5" fill="none"/>
+        <circle cx="20" cy="80" r="5" fill="#228b22"/> <path d="M20,80 Q30,70 40,80 Q30,90 20,80" fill="#228b22"/>
+    </svg>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="main-nav">
+        <!-- Left: Logo -->
+        <div class="nav-brand" onclick="goHome()">
+            <img src="images/orangutan-hat.png" alt="Logo">
+            <span>PongoBot.ai</span>
         </div>
-    </div>
 
-    <button class="sound-toggle" onclick="toggleJungleSound()">
-        <span id="sound-icon">🔊</span> 
-    </button>
+        <!-- Center: Menu Links (Hidden when chatting) -->
+        <ul class="nav-links" id="main-menu-links">
+            <li><a href="#hero">Home</a></li>
+            <li>
+                <a href="#features">Features <span class="arrow">▼</span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="showChatbot()">Chat with Pongo</a></li>
+                    <li><a href="https://isaaclew1102-web.github.io/PongoBotFruitCatcher/">Fruit Catcher</a></li>
+                    <li><a href="https://my.spline.design/immersivejungle-pD71NaxvruCKIVbC8k2lJmtR/">3D Jungle</a></li>
+                </ul>
+            </li>
+            <li><a href="#about">About</a></li>
+        </ul>
+
+        <!-- Right: Buttons -->
+        <div class="nav-right-container">
+            <!-- Main CTA (Hidden when chatting) -->
+            <button class="nav-cta" id="main-chat-btn" onclick="showChatbot()">Chat now!</button>
+            
+            <!-- Chat Controls (Visible ONLY when chatting) -->
+            <div id="chat-controls" style="display: none; gap: 10px;">
+                <button class="chat-nav-btn" onclick="goHome()">Home</button>
+                <button class="chat-nav-btn" onclick="restartChatbot()">Restart</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="main-website-content">
+        <section id="hero">
+            <img id="orangutan-mascot" src="images/orangutan-hat.png" alt="Playful Orangutan">
+            <div id="content-box">
+                <h1><span id="hero-title">Your Jungle Adventure Awaits!</span><span class="cursor"></span></h1>
+                <p>PongoBot, your orangutan companion, is ready to guide you.<br>Scroll down to explore or start now!</p>
+                <button class="explore-button" onclick="showChatbot()">Chat with PongoBot!</button>
+            </div>
+        </section>
+        <section id="features">
+            <h2 class="section-title">Why Pick Pongo?</h2>
+            <div class="features-grid">
+                <div class="feature-card"><span class="feature-icon">🍌</span><h3>Banana Logic</h3><p>Powered by high-fiber AI, PongoBot solves problems faster than peeling a ripe fruit.</p></div>
+                <div class="feature-card"><span class="feature-icon">🌴</span><h3>Jungle Knowledge</h3><p>From the canopy to the forest floor, ask anything about the wild world.</p></div>
+                <div class="feature-card"><span class="feature-icon">🛡</span><h3>Safe Safari</h3><p>Your data is protected like a hidden temple. Explore with total peace of mind.</p></div>
+            </div>
+        </section>
+        <section id="about">
+            <div class="about-container"><h2 class="section-title">About Pongo</h2><div class="about-text"><p>PongoBot isn't just an algorithm; he's a digital homage to the kings of the rainforest. We built this platform to make AI interaction feel natural, wild, and fun. Whether you need assistance, a quick game, or just a friend to chat with, the tribe is always open.</p></div></div>
+            <img src="images/image-removebg-preview.png" alt="Peeking Pongo" class="peeking-pongo" onclick="triggerBananaRain()">
+        </section>
+    </div> 
     
-    <audio id="jungle-sound" loop preload="auto">
-        <source src="audio/jungle-soundscape.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <button class="sound-toggle" onclick="toggleJungleSound()"><span id="sound-icon">🔊</span></button>
+    <audio id="jungle-sound" loop preload="auto"><source src="audio/jungle-soundscape.mp3" type="audio/mpeg"></audio>
 
-    <button id="home-button" onclick="goHome()">
-        Home
-    </button>
-    
-    <button id="restart-button" onclick="restartChatbot()">
-        Restart
-    </button>
-
-    <div id="chatbot-container"></div>
+    <!-- CHATBOT CONTAINER -->
+    <div id="chatbot-container"><div class="loader"></div></div>
 
     <script>
+        /* --- 1. TYPING EFFECT --- */
+        document.addEventListener("DOMContentLoaded", function() {
+            const textToType = "Your Jungle Adventure Awaits!";
+            const titleElement = document.getElementById('hero-title');
+            if(titleElement) {
+                titleElement.innerText = ""; let charIndex = 0;
+                function typeWriter() { if (charIndex < textToType.length) { titleElement.innerHTML += textToType.charAt(charIndex); charIndex++; setTimeout(typeWriter, 100); } }
+                setTimeout(typeWriter, 500);
+            }
+        });
+
+        /* --- 2. AMBIENT FALLING LEAVES --- */
+        function createLeaf() {
+            const leaf = document.createElement('div'); leaf.classList.add('leaf'); leaf.innerHTML = (Math.random() > 0.5) ? '🍃' : '🍂'; 
+            leaf.style.left = Math.random() * 100 + 'vw'; leaf.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            leaf.style.animationDuration = (Math.random() * 5 + 8) + 's'; document.body.appendChild(leaf);
+            setTimeout(() => { leaf.remove(); }, 13000);
+        }
+        setInterval(createLeaf, 800); 
+
+        /* --- 3. MOUSE TRAIL --- */
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.2) return; 
+            const firefly = document.createElement('div'); firefly.classList.add('firefly');
+            firefly.style.left = e.clientX + 'px'; firefly.style.top = e.clientY + 'px';
+            const rx = (Math.random()-0.5)*20; const ry = (Math.random()-0.5)*20;
+            firefly.style.transform = `translate(${rx}px, ${ry}px)`; document.body.appendChild(firefly);
+            setTimeout(() => { firefly.remove(); }, 1500);
+        });
+
+        /* --- 4. BUTTON LOGIC --- */
+        function triggerBananaRain() { for (let i = 0; i < 40; i++) { setTimeout(createBanana, i * 80); } showChatbot(); }
+        function createBanana() {
+            const banana = document.createElement('div'); banana.innerText = '🍌'; banana.classList.add('falling-banana');
+            banana.style.left = Math.random() * 100 + 'vw'; banana.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+            banana.style.fontSize = (Math.random() * 2 + 1.5) + 'rem'; document.body.appendChild(banana);
+            setTimeout(() => { banana.remove(); }, 4000);
+        }
+
+        /* --- 5. CHAT LOGIC (SWAPS NAV ITEMS) --- */
         function loadFreshChat() {
             const container = document.getElementById('chatbot-container');
             container.innerHTML = '';
-
+            const loader = document.createElement('div'); loader.className = 'loader'; container.appendChild(loader);
+            const oldScript = document.getElementById('typebot-init-script');
+            if (oldScript) oldScript.remove();
             const typebotElement = document.createElement('typebot-standard');
-            typebotElement.style.height = '100vh';
+            typebotElement.style.height = '100%'; 
             container.appendChild(typebotElement);
-
             const typebotInitScript = document.createElement("script");
-            typebotInitScript.type = "module";
-            typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js/dist/web.js';
-            Typebot.initStandard({ typebot: "pongo-bot-fb51et7" });`;
+            typebotInitScript.id = "typebot-init-script"; typebotInitScript.type = "module";
+            typebotInitScript.innerHTML = `import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js/dist/web.js'; Typebot.initStandard({ typebot: "pongo-bot-fb51et7" });`;
             document.body.append(typebotInitScript);
         }
 
         function showChatbot() {
-            const splashScreen = document.getElementById('splash-screen');
-            splashScreen.style.opacity = '0';
-            splashScreen.style.transition = 'opacity 1s ease-out';
+            const websiteContent = document.getElementById('main-website-content');
+            const chatContainer = document.getElementById('chatbot-container');
+            
+            // HIDE Main Menu Items
+            document.getElementById('main-menu-links').style.display = 'none';
+            document.getElementById('main-chat-btn').style.display = 'none';
+            
+            // SHOW Chat Controls
+            document.getElementById('chat-controls').style.display = 'flex';
 
+            websiteContent.style.transition = 'opacity 0.5s';
+            websiteContent.style.opacity = '0';
+            
             setTimeout(() => {
-                splashScreen.style.display = 'none';
-                document.getElementById('chatbot-container').style.display = 'block';
-                document.getElementById('restart-button').style.display = 'block';
-                document.getElementById('home-button').style.display = 'block';
+                websiteContent.style.display = 'none';
+                chatContainer.style.display = 'block';
+                document.body.style.overflow = 'hidden'; 
                 loadFreshChat();
-            }, 1000);
+            }, 500);
         }
 
         function restartChatbot() {
-            Object.keys(sessionStorage).forEach(key => {
-                if (key.startsWith('typebot-')) sessionStorage.removeItem(key);
-            });
-            Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('typebot-')) localStorage.removeItem(key);
-            });
+            Object.keys(sessionStorage).forEach(key => { if (key.startsWith('typebot-')) sessionStorage.removeItem(key); });
+            Object.keys(localStorage).forEach(key => { if (key.startsWith('typebot-')) localStorage.removeItem(key); });
             loadFreshChat();
         }
 
         function goHome() {
             document.getElementById('chatbot-container').style.display = 'none';
-            document.getElementById('restart-button').style.display = 'none';
-            document.getElementById('home-button').style.display = 'none';
+            
+            // RESTORE Main Menu Items
+            document.getElementById('main-menu-links').style.display = 'flex';
+            document.getElementById('main-chat-btn').style.display = 'block';
+            
+            // HIDE Chat Controls
+            document.getElementById('chat-controls').style.display = 'none';
 
-            const splashScreen = document.getElementById('splash-screen');
-            splashScreen.style.display = 'flex'; 
-            setTimeout(() => { splashScreen.style.opacity = '1'; }, 10); 
+            const websiteContent = document.getElementById('main-website-content');
+            websiteContent.style.display = 'block';
+            document.body.style.overflowX = 'hidden';
+            document.body.style.overflowY = 'auto';
+            setTimeout(() => { websiteContent.style.opacity = '1'; }, 10); 
         }
 
         function toggleJungleSound() {
             const jungleSound = document.getElementById('jungle-sound');
             const soundIcon = document.getElementById('sound-icon');
-
-            if (jungleSound.paused) {
-                jungleSound.play();
-                soundIcon.textContent = '🔊';
-            } else {
-                jungleSound.pause();
-                soundIcon.textContent = '🔇';
-            }
+            jungleSound.volume = 0.4;
+            if (jungleSound.paused) { jungleSound.play(); soundIcon.textContent = '🔊'; } 
+            else { jungleSound.pause(); soundIcon.textContent = '🔇'; }
         }
     </script>
 
