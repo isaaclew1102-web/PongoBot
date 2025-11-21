@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CUSTOM SCROLLBAR (NEW) --- */
+        /* --- CUSTOM SCROLLBAR --- */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -39,7 +39,7 @@
             background-size: cover;
         }
 
-        /* --- DAY & NIGHT CYCLE OVERLAY (Main Menu Only) --- */
+        /* --- DAY & NIGHT CYCLE OVERLAY --- */
         #day-night-overlay {
             position: fixed;
             top: 0;
@@ -53,11 +53,11 @@
         }
 
         @keyframes dayNightCycle {
-            0% { background-color: rgba(255, 255, 255, 0); }     /* Noon: Brightest (Start) */
-            25% { background-color: rgba(255, 140, 0, 0.3); }    /* Sunset: Orange */
-            50% { background-color: rgba(0, 0, 30, 0.6); }       /* Night: Dark Blue (Less Dark: 0.6) */
-            75% { background-color: rgba(147, 112, 219, 0.3); }  /* Sunrise: Purple */
-            100% { background-color: rgba(255, 255, 255, 0); }   /* Back to Noon */
+            0% { background-color: rgba(255, 255, 255, 0); }     /* Noon */
+            25% { background-color: rgba(255, 140, 0, 0.3); }    /* Sunset */
+            50% { background-color: rgba(0, 0, 30, 0.6); }       /* Night */
+            75% { background-color: rgba(147, 112, 219, 0.3); }  /* Sunrise */
+            100% { background-color: rgba(255, 255, 255, 0); }   /* Noon */
         }
 
         /* --- ANIMATIONS --- */
@@ -79,7 +79,7 @@
         .vine-right { right: 20px; transform: scaleX(-1); transform-origin: top right; }
         @keyframes gentleSway { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
 
-        /* --- NAVIGATION BAR (Centered Links) --- */
+        /* --- NAVIGATION BAR --- */
         .navbar {
             position: fixed;
             top: 0;
@@ -88,7 +88,7 @@
             height: 80px;
             padding: 0 40px;
             display: flex;
-            justify-content: space-between; /* Keeps Logo Left, Button Right */
+            justify-content: space-between; 
             align-items: center;
             background: rgba(0, 0, 0, 0.85); 
             backdrop-filter: blur(8px);
@@ -112,9 +112,9 @@
         @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } 100% { transform: rotate(0deg); } }
         .nav-brand img { height: 40px; width: auto; }
 
-        /* CENTERED LINKS CONTAINER */
+        /* CENTERED LINKS */
         .nav-links {
-            position: absolute; /* Absolute positioning to center perfectly */
+            position: absolute; 
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -152,14 +152,23 @@
             z-index: 2;
         }
 
-        /* Main CTA */
+        /* UPDATED Main Chat Button (Now Gold/Yellow) */
         .nav-cta {
             padding: 10px 25px;
-            background: linear-gradient(145deg, #FF9900, #FF6600);
-            border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;
+            /* Changed to Gold/Yellow Gradient */
+            background: linear-gradient(145deg, #FFDD00, #FFBB00);
+            border: none; border-radius: 8px; 
+            /* Changed text color to Dark Brown for contrast */
+            color: #554000; 
+            font-weight: bold; cursor: pointer;
             font-size: 1rem; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-family: 'Luckiest Guy', cursive; /* Added font to match other buttons */
         }
-        .nav-cta:hover { transform: scale(1.05); background: linear-gradient(145deg, #FFAA00, #FF7700); }
+        .nav-cta:hover { 
+            transform: scale(1.05); 
+            background: linear-gradient(145deg, #FFBB00, #FFDD00); 
+            box-shadow: 0 0 15px #FFD700; /* Added Glow */
+        }
 
         /* Chat Controls (Home/Restart) */
         .chat-nav-btn {
@@ -226,7 +235,7 @@
             top: 80px; 
             height: calc(100vh - 80px); 
             width: 100%;
-            background: #000; /* Solid black for readability */
+            background: #000;
             position: fixed; left: 0; z-index: 6000; 
         }
         .loader { border: 6px solid #333; border-top: 6px solid #FFD700; border-radius: 50%; width: 60px; height: 60px; animation: spin 0.8s linear infinite; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -236,7 +245,6 @@
         /* MOBILE */
         @media (max-width: 768px) {
             .navbar { padding: 15px 20px; }
-            /* Hide only main menu links on mobile */
             #nav-main-content .nav-links { display: none; }
             .nav-brand span { display: none; } 
             #content-box { padding: 30px 20px; } #content-box h1 { font-size: 2.5rem; } .section-title { font-size: 2.5rem; }
@@ -248,10 +256,8 @@
 </head>
 <body>
 
-    <!-- DAY NIGHT OVERLAY -->
     <div id="day-night-overlay"></div>
 
-    <!-- SVG VINE DECORATIONS -->
     <svg class="vine-decoration vine-left" width="200" height="400" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
         <path d="M20,0 Q50,100 20,200 T50,400" stroke="#2e8b57" stroke-width="5" fill="none"/>
         <circle cx="20" cy="50" r="5" fill="#228b22"/> <circle cx="40" cy="150" r="5" fill="#228b22"/>
@@ -263,15 +269,12 @@
         <path d="M20,80 Q30,70 40,80 Q30,90 20,80" fill="#228b22"/>
     </svg>
 
-    <!-- NAVBAR -->
     <nav class="navbar" id="main-nav">
-        <!-- Left: Logo -->
         <div class="nav-brand" onclick="goHome()">
             <img src="images/orangutan-hat.png" alt="Logo">
             <span>PongoBot.ai</span>
         </div>
 
-        <!-- Center: Menu Links (Hidden when chatting) -->
         <div id="nav-main-content" class="nav-group">
             <ul class="nav-links">
                 <li><a href="#hero">Home</a></li>
@@ -287,12 +290,9 @@
             </ul>
         </div>
 
-        <!-- Right: Buttons -->
         <div class="nav-right-container">
-            <!-- Main CTA (Hidden when chatting) -->
             <button class="nav-cta" id="main-chat-btn" onclick="showChatbot()">Chat now!</button>
             
-            <!-- Chat Controls (Visible ONLY when chatting) -->
             <div id="chat-controls" style="display: none; gap: 10px;">
                 <button class="chat-nav-btn" onclick="goHome()">Home</button>
                 <button class="chat-nav-btn" onclick="restartChatbot()">Restart</button>
@@ -326,11 +326,10 @@
     <button class="sound-toggle" onclick="toggleJungleSound()"><span id="sound-icon">🔊</span></button>
     <audio id="jungle-sound" loop preload="auto"><source src="audio/jungle-soundscape.mp3" type="audio/mpeg"></audio>
 
-    <!-- CHATBOT CONTAINER -->
     <div id="chatbot-container"><div class="loader"></div></div>
 
     <script>
-        /* --- 1. TYPING EFFECT --- */
+        /* --- JAVASCRIPT REMAINS UNCHANGED BUT INCLUDED FOR COMPLETENESS --- */
         document.addEventListener("DOMContentLoaded", function() {
             const textToType = "Your Jungle Adventure Awaits!";
             const titleElement = document.getElementById('hero-title');
@@ -341,21 +340,16 @@
             }
         });
 
-        /* --- 2. AMBIENT FALLING LEAVES --- */
         function createLeaf() {
             const leaf = document.createElement('div'); leaf.classList.add('leaf'); leaf.innerHTML = (Math.random() > 0.5) ? '🍃' : '🍂'; 
             leaf.style.left = Math.random() * 100 + 'vw'; leaf.style.fontSize = (Math.random() * 20 + 20) + 'px';
-            // Calculate random duration
             const duration = Math.random() * 5 + 8;
             leaf.style.animationDuration = duration + 's';
             document.body.appendChild(leaf);
-            
-            // Remove exactly when animation ends
             setTimeout(() => { leaf.remove(); }, duration * 1000);
         }
         setInterval(createLeaf, 800); 
 
-        /* --- 3. MOUSE TRAIL --- */
         document.addEventListener('mousemove', function(e) {
             if (Math.random() > 0.2) return; 
             const firefly = document.createElement('div'); firefly.classList.add('firefly');
@@ -365,7 +359,6 @@
             setTimeout(() => { firefly.remove(); }, 1500);
         });
 
-        /* --- 4. BUTTON LOGIC --- */
         function triggerBananaRain() { for (let i = 0; i < 40; i++) { setTimeout(createBanana, i * 80); } showChatbot(); }
         function createBanana() {
             const banana = document.createElement('div'); banana.innerText = '🍌'; banana.classList.add('falling-banana');
@@ -374,7 +367,6 @@
             setTimeout(() => { banana.remove(); }, 4000);
         }
 
-        /* --- 5. CHAT LOGIC (SWAPS NAV ITEMS) --- */
         function loadFreshChat() {
             const container = document.getElementById('chatbot-container');
             container.innerHTML = '';
@@ -393,17 +385,11 @@
         function showChatbot() {
             const websiteContent = document.getElementById('main-website-content');
             const chatContainer = document.getElementById('chatbot-container');
-            
-            // HIDE Main Menu Items
-            document.getElementById('main-menu-links').style.display = 'none';
+            document.getElementById('nav-main-content').style.display = 'none';
             document.getElementById('main-chat-btn').style.display = 'none';
-            
-            // SHOW Chat Controls
             document.getElementById('chat-controls').style.display = 'flex';
-
             websiteContent.style.transition = 'opacity 0.5s';
             websiteContent.style.opacity = '0';
-            
             setTimeout(() => {
                 websiteContent.style.display = 'none';
                 chatContainer.style.display = 'block';
@@ -420,14 +406,9 @@
 
         function goHome() {
             document.getElementById('chatbot-container').style.display = 'none';
-            
-            // RESTORE Main Menu Items
-            document.getElementById('main-menu-links').style.display = 'flex';
+            document.getElementById('nav-main-content').style.display = 'block';
             document.getElementById('main-chat-btn').style.display = 'block';
-            
-            // HIDE Chat Controls
             document.getElementById('chat-controls').style.display = 'none';
-
             const websiteContent = document.getElementById('main-website-content');
             websiteContent.style.display = 'block';
             document.body.style.overflowX = 'hidden';
